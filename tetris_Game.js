@@ -1,4 +1,4 @@
-﻿window.addEventListener("load", main);
+window.addEventListener("load", main);
 
 //фигуры I, L, T, O, S, Z, J;
 const cell = 30;
@@ -16,7 +16,7 @@ let speed = 1000;
 let text = '';
 
 const updateLevel = 100;
-const speedMax = 300;
+const speedMax = 400;
 
 function main() {
 	const canvas = document.getElementById("GameBoard");
@@ -120,12 +120,15 @@ function playGame(ctx, playField, tetraminoSequence, tetraminoCurrent, tetramino
 	
 	function loopGame(timestamp) {
 		if(!lastTime) { lastTime = timestamp }
+		
 		let delta = timestamp - lastTime;
 		if(delta > speed && !gameover && !pause) {
 			lastTime = timestamp;
 			updateGame();
 		}
+
 		draw(ctx, playField, tetraminoCurrent, tetraminoNext);	
+		
 		if(game && !gameover) {
 			requestId = requestAnimationFrame(loopGame);
 		}
@@ -146,7 +149,23 @@ function playGame(ctx, playField, tetraminoSequence, tetraminoCurrent, tetramino
 
 	function handleKeyPress(event) {
 	   if(pause || gameover) { return } 
-		switch(event.key) {
+		changeClickOrKeyPress(event.key);
+		//draw(ctx, playField, tetraminoCurrent, tetraminoNext);
+	}
+	document.addEventListener('keydown', handleKeyPress);
+	requestId = requestAnimationFrame(loopGame);
+
+	const buttonGame = document.querySelectorAll('.game-button');
+	buttonGame.forEach((button) => {
+		button.addEventListener('click', () => {
+	  		if(pause || gameover) { return } 
+			const valueButton = button.dataset.value;
+			changeClickOrKeyPress(valueButton);
+		})
+	})
+
+	function changeClickOrKeyPress(value) {
+		switch(value) {
 			case 'ArrowUp':
 				let rotateTetramino = rotateFigure(tetraminoCurrent);
 				if(isFigureMove(playField, rotateTetramino)) {
@@ -172,11 +191,9 @@ function playGame(ctx, playField, tetraminoSequence, tetraminoCurrent, tetramino
 			default:
 				return;
 		}
-		draw(ctx, playField, tetraminoCurrent, tetraminoNext);
 	}
-	document.addEventListener('keydown', handleKeyPress);
-	requestId = requestAnimationFrame(loopGame);
 }
+
 
 function moveLeftOrRight(grid, figureCurrent, step) {
 	figureCurrent.col += step;
