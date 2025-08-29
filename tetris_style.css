@@ -26,13 +26,10 @@ h1 {
 
 .gameButton {
 	position: absolute;
-
 	left: 440px;
 	top: 480px;
-
 	height: 105px;
 	width: 160px;
-
 	display: flex;
 	flex-direction: column;
 	text-align: center;
@@ -95,3 +92,4 @@ button:active {
 .non-selectable {
 	user-select:none;
 }
+
