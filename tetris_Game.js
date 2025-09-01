@@ -163,7 +163,7 @@ function playGame(ctx, playField, tetraminoSequence, tetraminoCurrent, tetramino
 			changeClickOrKeyPress(valueButton);
 		})
 	})
-
+	let speedDown = speed;
 	function changeClickOrKeyPress(value) {
 		switch(value) {
 			case 'ArrowUp':
@@ -174,10 +174,15 @@ function playGame(ctx, playField, tetraminoSequence, tetraminoCurrent, tetramino
 				break;
 
 			case 'ArrowDown':
-				while(isFigureMove(playField, tetraminoCurrent)) {
-					tetraminoCurrent.row++;
+				speed = speed * 0.5;
+				document.addEventListener('keyup', () => {//handleKeyUp);
+					if(event.key == 'ArrowDown') {
+						speed = speedDown;
+					}
+				})
+				if(!isFigureMove(playField, tetraminoCurrent)) {
+					tetraminoCurrent.row--;
 				}
-				tetraminoCurrent.row--
 				break;
 
 			case 'ArrowLeft':
@@ -229,3 +234,4 @@ function gameOver() {
 	document.body.appendChild(grave);
 	document.body.appendChild(graveText);
 }
+
