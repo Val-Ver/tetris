@@ -117,6 +117,7 @@ function start(ctx) {
 function playGame(ctx, playField, tetraminoSequence, tetraminoCurrent, tetraminoNext) {
 	let lastTime = 0;
 	let requestId;
+	let speedDown = speed;
 	
 	function loopGame(timestamp) {
 		if(!lastTime) { lastTime = timestamp }
@@ -148,9 +149,12 @@ function playGame(ctx, playField, tetraminoSequence, tetraminoCurrent, tetramino
 	}
 
 	function handleKeyPress(event) {
-	   if(pause || gameover) { return } 
+		if(pause || gameover) { return } 
+		if (event.key === 'ArrowDown') {
+			handleKeyDown();
+			return;
+		}
 		changeClickOrKeyPress(event.key);
-		//draw(ctx, playField, tetraminoCurrent, tetraminoNext);
 	}
 	document.addEventListener('keydown', handleKeyPress);
 	requestId = requestAnimationFrame(loopGame);
@@ -160,10 +164,17 @@ function playGame(ctx, playField, tetraminoSequence, tetraminoCurrent, tetramino
 		button.addEventListener('click', () => {
 	  		if(pause || gameover) { return } 
 			const valueButton = button.dataset.value;
+			if (valueButton === 'ArrowDown') {
+				while(isFigureMove(playField, tetraminoCurrent)) {
+					tetraminoCurrent.row++;
+				}
+				tetraminoCurrent.row--
+				return;
+			}
 			changeClickOrKeyPress(valueButton);
 		})
 	})
-	let speedDown = speed;
+
 	function changeClickOrKeyPress(value) {
 		switch(value) {
 			case 'ArrowUp':
@@ -172,15 +183,7 @@ function playGame(ctx, playField, tetraminoSequence, tetraminoCurrent, tetramino
 					tetraminoCurrent.matrix = rotateTetramino.matrix;	
 				}
 				break;
-
-			case 'ArrowDown':
-				speed = speed * 0.5;
-				document.addEventListener('keyup', handleKeyUp);
-				if(!isFigureMove(playField, tetraminoCurrent)) {
-					tetraminoCurrent.row--;
-				}
-				break;
-
+				
 			case 'ArrowLeft':
 				moveLeftOrRight(playField, tetraminoCurrent, -1);						
 				break;
@@ -193,14 +196,21 @@ function playGame(ctx, playField, tetraminoSequence, tetraminoCurrent, tetramino
 				return;
 		}
 	}
-	function handleKeyUp(event) {
-		if(event.key === 'ArrowDown') {
-			speed = speedDown;
-			document.removeEventListener('keyup', handleKeyUp);
+	
+	function handleKeyDown() {
+		speed = speed * 0.5;
+		document.addEventListener('keyup', handleKeyUp);
+				
+		if(!isFigureMove(playField, tetraminoCurrent)) {
+			tetraminoCurrent.row--;
 		}
 	}
+	
+	function handleKeyUp() {
+		speed = speedDown;
+		document.removeEventListener('keyup', handleKeyUp);
+	}
 }
-
 
 function moveLeftOrRight(grid, figureCurrent, step) {
 	figureCurrent.col += step;
@@ -236,6 +246,7 @@ function gameOver() {
 	document.body.appendChild(grave);
 	document.body.appendChild(graveText);
 }
+
 
 
 
