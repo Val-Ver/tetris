@@ -34,14 +34,14 @@ function getStartButtonAndStartClick(ctx) {
 	startButton.onclick = () => {
 		beginGame(ctx, startButton);
 	}
-	document.addEventListener('keydown', (event) => {
-		if(!game || gameover) {
-			if(event.key == 'ArrowDown') {
-				event.preventDefault();
-				beginGame(ctx, startButton);
-			}	
-		}
-	})
+	// document.addEventListener('keydown', (event) => {
+	// 	if(!game || gameover) {
+	// 		if(event.key == 'ArrowDown') {
+	// 			event.preventDefault();
+	// 			beginGame(ctx, startButton);
+	// 		}	
+	// 	}
+	// })
 }
 
 function beginGame(ctx, startButton) {
@@ -178,7 +178,6 @@ function playGame(ctx, playField, tetraminoSequence, tetraminoCurrent, tetramino
 				document.addEventListener('keyup', handleKeyUp);
 				if(!isFigureMove(playField, tetraminoCurrent)) {
 					tetraminoCurrent.row--;
-					document.removeEventListener('keyup', handleKeyUp);
 				}
 				break;
 
@@ -237,5 +236,6 @@ function gameOver() {
 	document.body.appendChild(grave);
 	document.body.appendChild(graveText);
 }
+
 
 
